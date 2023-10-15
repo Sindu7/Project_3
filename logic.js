@@ -1,14 +1,14 @@
 //Fill in the blank once API is available
 
-//let url = 
+let url = "http://127.0.0.1:5000/data"
 
 // Perform a GET request to the query URL/
-//d3.json(url).then(function (data) {
+d3.json(url).then(function (data) {
 
-//    console.log(data)
+    console.log(data)
     // Once we get a response, send the data.features object to the createFeatures function.
-//  createFeatures(data.features);
-//});
+  createFeatures(data);
+});
 
 //function createMarker(){
 //    let markers = {
