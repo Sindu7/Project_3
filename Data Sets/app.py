@@ -19,6 +19,7 @@ crime = Base.classes.LA_Crime
 # Create our session (link) from Python to the DB
 session = Session(engine)
 
+
 def parse_date(date_str):
     date_formats = ['%m/%d/%Y', '%m-%d-%Y', '%m-%d-%y']  # Add more formats if needed
     for date_format in date_formats:
