@@ -10,11 +10,17 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func, inspect, MetaData
 from flask import Flask, jsonify
 from datetime import datetime
+from flask_cors import CORS
 
+
+app = Flask(__name__)
+
+# Allow requests from all origins (you can specify specific origins)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 data = []
 
-with open(r'C:\Users\imale\Desktop\Project_3\Data Sets\41.18_Arrests_2013_-_2023.csv', 'r') as csv_file:
+with open("41.18_Arrests_2013_-_2023.csv") as csv_file:
     csv_reader = csv.DictReader(csv_file)
 
     for row in csv_reader:
@@ -65,7 +71,7 @@ with open(r'C:\Users\imale\Desktop\Project_3\Data Sets\41.18_Arrests_2013_-_2023
 # create Flask API
 app = Flask(__name__)
 
-@app.route('/data', methods=['GET'])
+@app.route('/api/data', methods=['GET'])
 def get_data():
     return jsonify(data)
 
