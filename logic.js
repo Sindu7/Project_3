@@ -1,27 +1,14 @@
-//Fill in the blank once API is available
-
-let url = "http://127.0.0.1:5000/api/data"
-
 //fetching the local site
 
-// Perform a GET request to the query URL/
-d3.json(url).then(function (data) {
+// Perform a GET request to the query json file
+d3.json("../Project_3/Data Sets/crime.json").then(function (stateData) {
 
-    console.log(`Data:${data}`)
+    console.log(stateData)
     // Once we get a response, send the data.features object to the createFeatures function.
-  //createFeatures(data);
+  createFeatures(data);
 });
 
-//function createMarker(){
-//    let markers = {
-//        radius: ,
-//        fillColor: chooseColor(),
-//        color: chooseColor(),
-//        fillOpacity: 0.5,
-//        weight: 0.5
-//    }
-//    return L.circleMarker();
-//};
+
 
 function createFeatures(crimeData){
 
