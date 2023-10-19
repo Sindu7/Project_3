@@ -1,25 +1,15 @@
 //Fill in the blank once API is available
 
-let url = "http://127.0.0.1:5000/data"
+let url = "http://127.0.0.1:5000/api/data"
 
 //fetching the local site
-function fetchData(){
-  fetch(url)
-  .then(response => response.json())
-  .then(data => {
-    const latitude = data.LAT;
-    const longitude = data.LON;
-    // Use the latitude and longitude as needed
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-  })
-  .catch(error => console.error('Error fetching data:', error));
-}
+
 // Perform a GET request to the query URL/
 d3.json(url).then(function (data) {
 
-    console.log(data)
+    console.log(`Data:${data}`)
     // Once we get a response, send the data.features object to the createFeatures function.
-  createFeatures(data);
+  //createFeatures(data);
 });
 
 //function createMarker(){
