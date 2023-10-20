@@ -61,4 +61,50 @@ function optionChanged(selectedYear) {
     // Value is the selected number of arrests, do something with it
     console.log('Selected arrests:', selectedYear);
     buildPieChart(selectedYear)
+    buildBarChart(selectedYear)
+}
+
+function buildBarChart(sample) {
+    d3.json("Data Sets/crime.json").then((stateData) => {
+        // Define age range increments
+        const ageIncrements = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+        
+        // Create an object to store counts for each age range
+        const ageCounts = {};
+
+        stateData.forEach((data) => {
+            const age = data["Age"];
+            // Find the appropriate age range for the current age
+            const ageRange = ageIncrements.find(increment => age >= increment && age < increment + 10);
+            
+            if (ageRange) {
+                if (ageCounts[ageRange]) {
+                    ageCounts[ageRange]++;
+                } else {
+                    ageCounts[ageRange] = 1;
+                }
+            }
+        });
+
+        const ageRanges = ageIncrements.map(increment => `${increment}-${increment + 9}`);
+        const counts = ageIncrements.map(increment => ageCounts[increment] || 0);
+
+        const data = [{
+            x: ageRanges,
+            y: counts,
+            type: 'bar'
+        }];
+
+        const layout = {
+            title: `Age Range Distribution for Year ${sample}`,
+            xaxis: {
+                title: 'Age Ranges'
+            },
+            yaxis: {
+                title: 'Arrest Counts'
+            }
+        };
+
+        Plotly.newPlot('bar-chart', data, layout);
+    });
 }
