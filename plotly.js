@@ -36,6 +36,7 @@ function buildPieChart(sample) {
     
         const raceTypes = Object.keys(raceCounts);
         const counts = Object.values(raceCounts);
+        const totalArrests = counts.reduce((acc, curr) => acc + curr, 0); // Calculate total arrests
 
         const data = [{
             labels: raceTypes,
@@ -48,6 +49,10 @@ function buildPieChart(sample) {
         };
 
         Plotly.newPlot('pie-chart', data, layout);
+
+        // Display total arrests
+        const totalArrestsElement = d3.select('#total-arrests');
+        totalArrestsElement.text(`Total Arrests: ${totalArrests}`);
     });
 } 
 
