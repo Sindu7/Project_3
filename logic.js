@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(myMap)
 // Perform a GET request to the query json file
-d3.json("../Project_3/Data Sets/crime.json").then(function (stateData) {
+d3.json("../Data Sets/crime.json").then(function (stateData) {
 
   console.log(stateData);
   // Once we get a response, send the data.features object to the createFeatures function.
