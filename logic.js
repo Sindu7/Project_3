@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(myMap)
 // Perform a GET request to the query json file
-d3.json("../Data Sets/crime.json").then(function (stateData) {
+d3.json("../Project_3/Data Sets/crime.json").then(function (stateData) {
 
   console.log(stateData);
   // Once we get a response, send the data.features object to the createFeatures function.
@@ -29,23 +29,51 @@ d3.json("../Data Sets/crime.json").then(function (stateData) {
   });
 
 
-  // Creating heat map
-  let heatArray = [];
+   // Create a dictionary to hold layers of each year
+   let yearLayers = {};
 
-  for (let i = 1; i < stateData.length; i++){
-    let location = [stateData[i].LAT, stateData[i].LON];
-    if (location.every((val) => !isNaN(val))) {
-      heatArray.push(location);
-    }
-  }
-  
-  let heat = L.heatLayer(heatArray, {
-    radius: 20,
-    blur:35
-  }).addTo(myMap);
-
-
-});
+   // Heat map data of all years combined
+   let heatArray = [];
+ 
+   // Loop through for coordinates
+   for (let i = 1; i < stateData.length; i++) {
+     let location = [stateData[i].LAT, stateData[i].LON];
+       heatArray.push(location);
+     
+ 
+     // Group data by year in the yearLayers dictionary
+     let year = stateData[i].Year;
+     if (!yearLayers[year]) {
+       yearLayers[year] = [];
+     }
+     yearLayers[year].push(location);
+   }
+ 
+   // Create the heat layer for all data
+   let heatLayerAll = L.heatLayer(heatArray, {
+     radius: 20,
+     blur: 35,
+   }).addTo(myMap);
+ 
+   // Create an overlay object
+   let overlayMaps = {
+     "All Years": heatLayerAll,
+   };
+ 
+   // Loop through yearLayers and Add layers for each year and overlay to filter by year 
+   for (let year in yearLayers) {
+     let heatLayerYear = L.heatLayer(yearLayers[year], {
+       radius: 20,
+       blur: 35,
+     });
+     overlayMaps[year] = heatLayerYear;
+   }
+ 
+   // Create the layer control
+   L.control.layers(null, overlayMaps, {
+     collapsed: false
+   }).addTo(myMap);
+ });
 
 
 
@@ -56,7 +84,7 @@ function createFeatures(crimeData){
     layer.bindTooltip(`<h3>Location: ${stateData.Area_Name}</h3><p>Arrest Date: ${stateData.Arrest_Date}</p>`);
   };
   
-
+  
 
   let crime = L.geoJSON(crimeData,{
     onEachFeature: onEachFeature
@@ -65,33 +93,3 @@ function createFeatures(crimeData){
   createMap(crime)
 
 }
-
-//function createMap(crime){
-
-//  let street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-//  });
-
-  // Create the baseMap object
-//  let baseMaps = {
-//    "Street Map": street
-//  };
-
-  //Create an overlay object to hols the overlay
-//  let overlayMaps = {
-//    Crime: crime
-//  };
-
-//  let myMap = L.map("map", {
-//    center: [34.000904, -118.159803],
-//   zoom: 10
-    
-//  });
-// Add the layer control to the map.
-//  L.control.layers(baseMaps, overlayMaps, {
-//    collapsed: true
-//  }).addTo(myMap);
-
-//}
-
-
