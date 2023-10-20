@@ -4,7 +4,8 @@
 d3.json("Data Sets/crime.json").then(function (stateData) {
     // Extract unique years from the data
     const uniqueYears = [...new Set(stateData.map(item => item.Year))];
-    
+    uniqueYears.sort((a, b) => a - b);
+
     // Populate the dropdown with unique years
     const dropdown = d3.select('#selDataset');
     
@@ -46,6 +47,13 @@ function buildPieChart(sample) {
 
         const layout = {
             title: `Race Distribution for Year ${sample}`,
+            width: 600,
+            height: 600,
+            aspectratio: {x:1, y: 1},
+            legend: {
+                x: 1.5,
+                y: 0.5,
+            },
         };
 
         Plotly.newPlot('pie-chart', data, layout);
@@ -66,13 +74,16 @@ function optionChanged(selectedYear) {
 
 function buildBarChart(sample) {
     d3.json("Data Sets/crime.json").then((stateData) => {
+        // Filter the data for the selected year
+        let filteredData = stateData.filter(result => result.Year == sample);
+
         // Define age range increments
         const ageIncrements = [10, 20, 30, 40, 50, 60, 70, 80, 90];
         
         // Create an object to store counts for each age range
         const ageCounts = {};
 
-        stateData.forEach((data) => {
+        filteredData.forEach((data) => {
             const age = data["Age"];
             // Find the appropriate age range for the current age
             const ageRange = ageIncrements.find(increment => age >= increment && age < increment + 10);
