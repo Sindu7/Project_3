@@ -2,26 +2,58 @@
 
 // Perform a GET request to the query json file
 d3.json("Data Sets/crime.json").then(function (stateData) {
-    // Process the Data
-    const yearCounts = d3.rollup(stateData, v => v.length, d => d.Year);
-
-    // Get years and counts
-    const years = Array.from(yearCounts.keys());
-    const counts = Array.from(yearCounts.values());
-
-    // Populate the dropdown
+    // Extract unique years from the data
+    const uniqueYears = [...new Set(stateData.map(item => item.Year))];
+    
+    // Populate the dropdown with unique years
     const dropdown = d3.select('#selDataset');
-
-    years.forEach((year, index) => {
+    
+    uniqueYears.forEach((year) => {
         const option = dropdown.append('option');
-        option.attr('value', counts[index]);
-        option.text(`${year} (${counts[index]} arrests)`);
+        option.attr('value', year);
+        option.text(`${year}`);
     });
 });
 
-// Define the optionChanged function
-function optionChanged(value) {
-    // Value is the selected number of arrests, do something with it
-    console.log('Selected arrests:', value);
-}
 
+
+function buildPieChart(sample) {
+    
+    d3.json("Data Sets/crime.json").then((stateData) => {
+
+        let filteredData = stateData.filter(result => result.Year == sample)
+
+        const raceCounts = {};
+
+        filteredData.forEach((data) => {
+            const raceType = data["Race"];
+            if (raceCounts[raceType]) {
+                raceCounts[raceType]++;
+            } else {
+                raceCounts[raceType] = 1;
+            }
+        });
+    
+        const raceTypes = Object.keys(raceCounts);
+        const counts = Object.values(raceCounts);
+
+        const data = [{
+            labels: raceTypes,
+            values: counts,
+            type: 'pie'
+        }];
+
+        const layout = {
+            title: `Race Distribution for Year ${sample}`,
+        };
+
+        Plotly.newPlot('pie-chart', data, layout);
+    });
+} 
+
+// Define the optionChanged function
+function optionChanged(selectedYear) {
+    // Value is the selected number of arrests, do something with it
+    console.log('Selected arrests:', selectedYear);
+    buildPieChart(selectedYear)
+}
