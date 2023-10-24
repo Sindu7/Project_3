@@ -119,3 +119,39 @@ function buildBarChart(sample) {
         Plotly.newPlot('bar-chart', data, layout);
     });
 }
+
+d3.json("Data Sets/crime.json").then(function(data) {
+    const timeRange = data.map(obj => obj.Time_Range);
+    // Call a function to create the counted table chart with the timeRange array
+    function createCountedTableChart(timeRange) {
+      const counts = {};
+      timeRange.forEach(item => {
+        counts[item] = (counts[item] || 0) + 1;
+      });
+      // Call a function to create the table chart with the counts
+      function createTableChart(counts) {
+        // Create a table element
+        const table = document.createElement("table");
+        // Create table header
+        const headerRow = table.insertRow();
+        const headerCell1 = headerRow.insertCell();
+        const headerCell2 = headerRow.insertCell();
+        headerCell1.textContent = "Time Range";
+        headerCell2.textContent = "Count";
+        // Populate the table with data
+        for (const time in counts) {
+          const row = table.insertRow();
+          const cell1 = row.insertCell();
+          const cell2 = row.insertCell();
+          cell1.textContent = time;
+          cell2.textContent = counts[time];
+        }
+        // Append the table to a container element
+        const tableContainer = document.getElementById("table-container");
+        tableContainer.innerHTML = ""; // Clear any existing content
+        tableContainer.appendChild(table);
+      }
+      createTableChart(counts);
+    }
+    createCountedTableChart(timeRange);
+  });
